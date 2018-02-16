@@ -8,7 +8,19 @@
 
 #include "animation.hpp"
 
+bool developpement = true;
+
+void fenetre_blanche() {
+    window.clear(sf::Color::White);
+}
+void fenetre_noire() {
+    window.clear(sf::Color::Black);
+}
 void flash(SerialPort &arduino)
 {
+    if (developpement) {
+        fenetre_blanche();
+        fenetre_noire();
+    }
     arduino.serialPrint("a");
 }
