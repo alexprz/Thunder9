@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A750E664203778060090E158 /* libsfml-audio.2.4.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E9BF072035FF1F00641E01 /* libsfml-audio.2.4.2.dylib */; };
+		A750E665203778060090E158 /* libsfml-graphics.2.4.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E9BF062035FF1F00641E01 /* libsfml-graphics.2.4.2.dylib */; };
+		A750E666203778060090E158 /* libsfml-network.2.4.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E9BF052035FF1F00641E01 /* libsfml-network.2.4.2.dylib */; };
+		A750E667203778060090E158 /* libsfml-system.2.4.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E9BF092035FF1F00641E01 /* libsfml-system.2.4.2.dylib */; };
+		A750E668203778060090E158 /* libsfml-window.2.4.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E9BF082035FF1F00641E01 /* libsfml-window.2.4.2.dylib */; };
 		A7E9BEFE2035FE2A00641E01 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A7E9BEFD2035FE2A00641E01 /* main.cpp */; };
 		A7E9BF102036041C00641E01 /* libsfml-audio.2.4.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E9BF0F2036041B00641E01 /* libsfml-audio.2.4.2.dylib */; };
 		A7E9BF132036095B00641E01 /* SerialPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A7E9BF122036095B00641E01 /* SerialPort.cpp */; };
@@ -28,6 +33,8 @@
 
 /* Begin PBXFileReference section */
 		A750E65520370D140090E158 /* libsfml-graphics.2.4.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsfml-graphics.2.4.2.dylib"; path = "../../../../../usr/local/Cellar/sfml/2.4.2_1/lib/libsfml-graphics.2.4.2.dylib"; sourceTree = "<group>"; };
+		A750E65720376FB80090E158 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
+		A750E65F203774EE0090E158 /* libsfml-audio.2.4.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libsfml-audio.2.4.2.dylib"; sourceTree = "<group>"; };
 		A7E9BEFA2035FE2A00641E01 /* Thunder9 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Thunder9; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7E9BEFD2035FE2A00641E01 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A7E9BF052035FF1F00641E01 /* libsfml-network.2.4.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsfml-network.2.4.2.dylib"; path = "ExternalLibrairies/SFML/lib/libsfml-network.2.4.2.dylib"; sourceTree = "<group>"; };
@@ -49,6 +56,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A750E664203778060090E158 /* libsfml-audio.2.4.2.dylib in Frameworks */,
+				A750E665203778060090E158 /* libsfml-graphics.2.4.2.dylib in Frameworks */,
+				A750E666203778060090E158 /* libsfml-network.2.4.2.dylib in Frameworks */,
+				A750E667203778060090E158 /* libsfml-system.2.4.2.dylib in Frameworks */,
+				A750E668203778060090E158 /* libsfml-window.2.4.2.dylib in Frameworks */,
 				A7E9BF102036041C00641E01 /* libsfml-audio.2.4.2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -59,6 +71,7 @@
 		A7E9BEF12035FE2A00641E01 = {
 			isa = PBXGroup;
 			children = (
+				A750E65F203774EE0090E158 /* libsfml-audio.2.4.2.dylib */,
 				A7E9BEFC2035FE2A00641E01 /* Thunder9 */,
 				A7E9BEFB2035FE2A00641E01 /* Products */,
 				A7E9BF042035FF1E00641E01 /* Frameworks */,
@@ -90,6 +103,7 @@
 		A7E9BF042035FF1E00641E01 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A750E65720376FB80090E158 /* libc++.1.dylib */,
 				A750E65520370D140090E158 /* libsfml-graphics.2.4.2.dylib */,
 				A7E9BF072035FF1F00641E01 /* libsfml-audio.2.4.2.dylib */,
 				A7E9BF0F2036041B00641E01 /* libsfml-audio.2.4.2.dylib */,
@@ -274,11 +288,12 @@
 		A7E9BF022035FE2A00641E01 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = /usr/local/Cellar/sfml/2.4.2_1/include;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/ExternalLibrairies/SFML/include";
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/usr/local/Cellar/sfml/2.4.2_1/lib,
+					"${SRCROOT}/ExternalLibrairies/SFML/lib",
+					"$(PROJECT_DIR)/ExternalLibrairies/SFML/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -287,11 +302,12 @@
 		A7E9BF032035FE2A00641E01 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = /usr/local/Cellar/sfml/2.4.2_1/include;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/ExternalLibrairies/SFML/include";
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/usr/local/Cellar/sfml/2.4.2_1/lib,
+					"${SRCROOT}/ExternalLibrairies/SFML/lib",
+					"$(PROJECT_DIR)/ExternalLibrairies/SFML/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

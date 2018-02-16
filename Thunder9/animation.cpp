@@ -11,20 +11,23 @@
 #include <iostream>
 
 extern bool dev;
+extern sf::RenderWindow WINDOW;
 
-bool developpement = true;
 
 void fenetre_blanche() {
-    sf::window.clear(sf::Color::White);
+    WINDOW.clear(sf::Color::White);
+    WINDOW.display();
 }
 void fenetre_noire() {
-    sf::window.clear(sf::Color::Black);
+    WINDOW.clear(sf::Color::Black);
+    WINDOW.display();
 }
 void flash(SerialPort &arduino)
 {
     if(dev)
     {
         fenetre_blanche();
+        usleep(100000);
         fenetre_noire();
         cout << "Flash !" << endl;
     }

@@ -13,6 +13,7 @@
 using namespace std;
 
 #include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
 // #include <SFML/Graphics.hpp>
 
 
@@ -24,9 +25,14 @@ using namespace std;
 bool triggerFlash = false;
 bool over = false;
 bool stopRecording = false;
-bool dev = true;
+std::string ARDUINO_PATH = "/dev/cu.usbmodem1411";
+
+//DEV VARS
+bool dev = false;
+bool endFlashSimulator = false;
 
 sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
+sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
 SerialPort ARDUINO;
 
 
@@ -59,13 +65,34 @@ void peakDetector()
 
 }
 
+void facticePeakDetector()
+{
+    if(dev)
+    {
+        while(!endFlashSimulator)
+        {
+            triggerFlash = true;
+            usleep(bpmToUS(76));
+        }
+    }
+    else
+    {
+        for(int j = 0; j<100; j++)
+        {
+            cout << j << endl;
+            triggerFlash = true;
+            usleep(bpmToUS(76));
+        }
+    }
+    
+}
+
 bool mainInit()
 {
     if(!dev)
     {
         //Arduino qu'en production
-
-        ARDUINO = SerialPort("/dev/cu.usbmodem1411");
+        ARDUINO = SerialPort(char(ARDUINO_PATH));
 
         if(!ARDUINO.isAvailable()){
             //La connexion à l'arduino a échouée
@@ -90,20 +117,35 @@ int main()
         //L'initialisation a échouée
         return -1;
     }
+    
+    std::thread t1(flashController);
+    std::thread t2(facticePeakDetector);
 
     if(dev) {
-        // sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
+        // run the program as long as the window is open
+        while (WINDOW.isOpen())
+        {
+            // check all the window's events that were triggered since the last iteration of the loop
+            sf::Event event;
+            while (WINDOW.pollEvent(event))
+            {
+                // "close requested" event: we close the window
+                if (event.type == sf::Event::Closed)
+                {
+                    WINDOW.close();
+                    endFlashSimulator = true;
+                }
+            }
+        }
+        
     }
+    
+    
 
-    std::thread t1(flashController);
-    for(int j = 0; j<100; j++)
-    {
-        cout << j << endl;
-        triggerFlash = true;
-        usleep(bpmToUS(76));
-    }
+    
     over = true;
     t1.join();
+    t2.join();
     return 0;
 }
 
