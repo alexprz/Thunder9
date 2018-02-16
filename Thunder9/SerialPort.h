@@ -22,12 +22,14 @@ class SerialPort
 private:
     char* path;
     int fd;
-    
+    bool portOpened = false;
+
 public:
+    SerialPort();
     SerialPort(char* givenPath);
     ~SerialPort();
-    
-    void serialPrint(char* c);
-    
-};
 
+    bool isAvailable();
+    void serialPrint(char* c);
+
+};

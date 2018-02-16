@@ -7,8 +7,17 @@
 //
 
 #include "animation.hpp"
+#include <iostream>
+
+extern bool dev;
 
 void flash(SerialPort &arduino)
 {
-    arduino.serialPrint("a");
+    if(dev)
+    {
+        cout << "Flash !" << endl;
+    }
+    else
+        arduino.serialPrint("a");
+
 }

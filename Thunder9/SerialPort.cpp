@@ -17,24 +17,42 @@
 
 using namespace std;
 
+
+SerialPort::SerialPort()
+{
+
+}
+
 SerialPort::SerialPort(char* givenPath)
 {
     path = givenPath;
-    
+
     fd = open(path, O_RDWR | O_NOCTTY | O_NDELAY);
-    
+
     if (fd == -1)
+    {
         perror("open_port: Unable to open port - ");
+        portOpened = false;
+    }
     else
+    {
         fcntl(fd, F_SETFL, 0);
-    
-    //Giving time to arduino to initialize
-    sleep(1);
+        portOpened = true;
+
+        //Giving time to arduino to initialize
+        sleep(1);
+    }
+
 }
 
 SerialPort::~SerialPort()
 {
     close(fd);
+}
+
+bool SerialPort::isAvailable()
+{
+    return portOpened;
 }
 
 void SerialPort::serialPrint(char* c)
