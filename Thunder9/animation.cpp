@@ -12,6 +12,7 @@
 
 extern bool dev;
 extern sf::RenderWindow WINDOW;
+extern SerialPort ARDUINO;
 
 
 void fenetre_blanche() {
@@ -22,7 +23,7 @@ void fenetre_noire() {
     WINDOW.clear(sf::Color::Black);
     WINDOW.display();
 }
-void flash(SerialPort &arduino)
+void flash()
 {
     if(dev)
     {
@@ -32,6 +33,6 @@ void flash(SerialPort &arduino)
         cout << "Flash !" << endl;
     }
     else
-        arduino.serialPrint("a");
+        ARDUINO.serialPrint("a");
 
 }

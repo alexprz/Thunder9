@@ -17,4 +17,4 @@
 void fenetre_noire();
 void fenetre_blanche();
 
-void flash(SerialPort &arduino);
+void flash();

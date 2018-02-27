@@ -25,10 +25,11 @@ using namespace std;
 bool triggerFlash = false;
 bool over = false;
 bool stopRecording = false;
+bool stopPeakDetect = false;
 std::string ARDUINO_PATH = "/dev/cu.usbmodem1411";
 
 //DEV VARS
-bool dev = false;
+bool dev = true;
 bool endFlashSimulator = false;
 
 sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
@@ -44,9 +45,10 @@ void flashController()
     {
         if(triggerFlash)
         {
-            flash(ARDUINO);
+            flash();
             triggerFlash = false;
         }
+        usleep(10000);
     }
 }
 
@@ -62,7 +64,17 @@ void mainRecorder()
 
 void peakDetector()
 {
-
+    RECORDER.start();
+    sleep(1);
+    RECORDER.stop();
+    while(!over)
+    {
+        const sf::SoundBuffer& buffer = RECORDER.getBuffer();
+        const sf::Int16* samples = buffer.getSamples();
+        std::size_t count = buffer.getSampleCount();
+        cout << samples[count-1] << endl;
+        usleep(100000);
+    }
 }
 
 void facticePeakDetector()
@@ -72,7 +84,7 @@ void facticePeakDetector()
         while(!endFlashSimulator)
         {
             triggerFlash = true;
-            usleep(bpmToUS(76));
+            usleep(bpmToUS(94));
         }
     }
     else
@@ -92,7 +104,7 @@ bool mainInit()
     if(!dev)
     {
         //Arduino qu'en production
-        ARDUINO = SerialPort(char(ARDUINO_PATH));
+        ARDUINO = SerialPort("/dev/cu.usbmodem1411");
 
         if(!ARDUINO.isAvailable()){
             //La connexion à l'arduino a échouée
@@ -120,6 +132,7 @@ int main()
     
     std::thread t1(flashController);
     std::thread t2(facticePeakDetector);
+    std::thread t3(peakDetector);
 
     if(dev) {
         // run the program as long as the window is open
@@ -136,6 +149,7 @@ int main()
                     endFlashSimulator = true;
                 }
             }
+            usleep(10000);
         }
         
     }
@@ -146,6 +160,7 @@ int main()
     over = true;
     t1.join();
     t2.join();
+    t3.join();
     return 0;
 }
 
