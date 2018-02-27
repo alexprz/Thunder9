@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <thread>
+#include <math.h>
 
 using namespace std;
 
@@ -27,6 +28,10 @@ bool over = false;
 bool stopRecording = false;
 bool stopPeakDetect = false;
 std::string ARDUINO_PATH = "/dev/cu.usbmodem1411";
+
+//RECORD VARS
+int currentIntensity = 0;
+double recordTime = 0;
 
 //DEV VARS
 bool dev = true;
@@ -64,15 +69,31 @@ void mainRecorder()
 
 void peakDetector()
 {
-    RECORDER.start();
-    sleep(1);
-    RECORDER.stop();
+    int seuil = 0;
+//    cout << "Ecoute du vide" << endl;
+//    while (recordTime < 5.) {
+//        int current = currentIntensity;
+//        if(abs(current) > seuil)
+//        {
+//            cout << " up" << endl;
+//            seuil = abs(current);
+//            triggerFlash = true;
+//        }
+//    }
+//    cout << "Fin" << endl;
+    
+    seuil = 159404908;
+    
+    cout << "Seuil : " << seuil << endl;
+    
     while(!over)
     {
-        const sf::SoundBuffer& buffer = RECORDER.getBuffer();
-        const sf::Int16* samples = buffer.getSamples();
-        std::size_t count = buffer.getSampleCount();
-        cout << samples[count-1] << endl;
+        if(abs(currentIntensity) > seuil)
+        {
+            triggerFlash = true;
+            cout << "over " << endl;
+        }
+        
         usleep(100000);
     }
 }
@@ -123,18 +144,78 @@ bool mainInit()
     return true;
 }
 
+#include "RtAudio.h"
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
+
+int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+           double streamTime, RtAudioStreamStatus status, void *userData )
+{
+    if ( status )
+        std::cout << "Stream overflow detected!" << std::endl;
+    // Do something with the data in the "inputBuffer" buffer.
+    //    int *buf = inputBuffer;
+    for (int i=0; i<nBufferFrames; i++) {
+        currentIntensity = ((int*)inputBuffer)[i];
+    }
+    recordTime = streamTime;
+    return 0;
+}
+int listening()
+{
+    RtAudio adc;
+    if ( adc.getDeviceCount() < 1 ) {
+        std::cout << "\nNo audio devices found!\n";
+        exit( 0 );
+    }
+    RtAudio::StreamParameters parameters;
+    parameters.deviceId = adc.getDefaultInputDevice();
+    parameters.nChannels = 2;
+    parameters.firstChannel = 0;
+    unsigned int sampleRate = 44100;
+    unsigned int bufferFrames = 256; // 256 sample frames
+    try {
+        adc.openStream( NULL, &parameters, RTAUDIO_SINT16,
+                       sampleRate, &bufferFrames, &record );
+        adc.startStream();
+    }
+    catch ( RtAudioError& e ) {
+        e.printMessage();
+        exit( 0 );
+    }
+    
+    char input;
+    std::cout << "\nRecording ... press <enter> to quit.\n";
+    while(!over)
+    {
+        sleep(1);
+    }
+    try {
+        // Stop the stream
+        adc.stopStream();
+    }
+    catch (RtAudioError& e) {
+        e.printMessage();
+    }
+    if ( adc.isStreamOpen() ) adc.closeStream();
+    return 0;
+}
+
 int main()
 {
     if(!mainInit()) {
         //L'initialisation a échouée
         return -1;
     }
-    
+
     std::thread t1(flashController);
-    std::thread t2(facticePeakDetector);
+    //std::thread t2(facticePeakDetector);
+    std::thread listen(listening);
     std::thread t3(peakDetector);
 
     if(dev) {
+        flash();
         // run the program as long as the window is open
         while (WINDOW.isOpen())
         {
@@ -151,16 +232,17 @@ int main()
             }
             usleep(10000);
         }
-        
-    }
-    
-    
 
-    
+    }
+
+
+
+
     over = true;
     t1.join();
-    t2.join();
+    //t2.join();
     t3.join();
+    listen.join();
     return 0;
 }
 
@@ -194,3 +276,6 @@ int main()
 //    cout << "Hello world !";
 //    return 0;
 //}
+
+
+
