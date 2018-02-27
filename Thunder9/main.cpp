@@ -82,7 +82,7 @@ void peakDetector()
 //    }
 //    cout << "Fin" << endl;
     
-    seuil = 159404908;
+    seuil =159404908;
     
     cout << "Seuil : " << seuil << endl;
     
@@ -91,10 +91,9 @@ void peakDetector()
         if(abs(currentIntensity) > seuil)
         {
             triggerFlash = true;
-            cout << "over " << endl;
         }
         
-        usleep(100000);
+        usleep(50000);
     }
 }
 
@@ -156,9 +155,13 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
         std::cout << "Stream overflow detected!" << std::endl;
     // Do something with the data in the "inputBuffer" buffer.
     //    int *buf = inputBuffer;
+//    int max = 0;
     for (int i=0; i<nBufferFrames; i++) {
+//        if ( abs(((int*)inputBuffer)[i]) > max)
+//            max = abs(((int*)inputBuffer)[i]);
         currentIntensity = ((int*)inputBuffer)[i];
     }
+//    currentIntensity = max;
     recordTime = streamTime;
     return 0;
 }

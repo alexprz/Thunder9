@@ -30,7 +30,6 @@ void flash()
         fenetre_blanche();
         usleep(100000);
         fenetre_noire();
-        cout << "Flash !" << endl;
     }
     else
         ARDUINO.serialPrint("a");
