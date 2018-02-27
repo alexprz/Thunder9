@@ -12,7 +12,7 @@
 
 extern bool dev;
 extern sf::RenderWindow WINDOW;
-extern SerialPort ARDUINO;
+extern SerialPort *ARDUINO;
 
 
 void fenetre_blanche() {
@@ -32,6 +32,6 @@ void flash()
         fenetre_noire();
     }
     else
-        ARDUINO.serialPrint("a");
+        ARDUINO->serialPrint("a");
 
 }

@@ -57,7 +57,7 @@ bool SerialPort::isAvailable()
 
 void SerialPort::serialPrint(char* c)
 {
-    int n = write(fd, c, 1);
+    int n = write(fd, c, 2);
     if (n < 0)
         fputs("writing failed!\n", stderr);
 }

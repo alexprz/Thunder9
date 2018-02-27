@@ -34,12 +34,12 @@ int currentIntensity = 0;
 double recordTime = 0;
 
 //DEV VARS
-bool dev = true;
+bool dev = false;
 bool endFlashSimulator = false;
 
 sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
 sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
-SerialPort ARDUINO;
+SerialPort *ARDUINO;
 
 
 void flashController()
@@ -124,9 +124,9 @@ bool mainInit()
     if(!dev)
     {
         //Arduino qu'en production
-        ARDUINO = SerialPort("/dev/cu.usbmodem1411");
+        ARDUINO = new SerialPort("/dev/cu.usbmodem1411");
 
-        if(!ARDUINO.isAvailable()){
+        if(!ARDUINO->isAvailable()){
             //La connexion à l'arduino a échouée
             cout << "La connexion à l'arduino a échouée..." << endl;
             return false;
@@ -217,26 +217,24 @@ int main()
     std::thread listen(listening);
     std::thread t3(peakDetector);
 
-    if(dev) {
-        flash();
-        // run the program as long as the window is open
-        while (WINDOW.isOpen())
+    flash();
+    // run the program as long as the window is open
+    while (WINDOW.isOpen())
+    {
+        // check all the window's events that were triggered since the last iteration of the loop
+        sf::Event event;
+        while (WINDOW.pollEvent(event))
         {
-            // check all the window's events that were triggered since the last iteration of the loop
-            sf::Event event;
-            while (WINDOW.pollEvent(event))
+            // "close requested" event: we close the window
+            if (event.type == sf::Event::Closed)
             {
-                // "close requested" event: we close the window
-                if (event.type == sf::Event::Closed)
-                {
-                    WINDOW.close();
-                    endFlashSimulator = true;
-                }
+                WINDOW.close();
+                endFlashSimulator = true;
             }
-            usleep(10000);
         }
-
+        usleep(10000);
     }
+
 
 
 
