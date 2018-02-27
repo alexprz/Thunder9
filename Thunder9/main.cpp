@@ -82,6 +82,7 @@ void peakDetector()
 //    }
 //    cout << "Fin" << endl;
     
+    //seuil =159404908;
     seuil =159404908;
     
     cout << "Seuil : " << seuil << endl;
@@ -93,7 +94,7 @@ void peakDetector()
             triggerFlash = true;
         }
         
-        usleep(50000);
+        usleep(5000);
     }
 }
 
