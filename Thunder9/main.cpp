@@ -43,7 +43,8 @@ std::string ARDUINO_PATH = "/dev/cu.usbmodem1411";
 long int currentIntensity = 0;
 double recordTime = 0;
 unsigned long int peakThreshold = 79404908;//259404908;  //Default threshold value
-float maxPercent = 0.2;
+int minThreshold = 10000000;
+float maxPercent = 0.4;
 
 //RESOLUTION VARS
 int peakResolution = 5000; //in us
@@ -101,7 +102,7 @@ void maxDetector(double duration, unsigned long int &max, bool &analyse)
     {
         if(analyse)
         {
-            cout << "Listening max..." << endl;
+            cout << "Analysing..." << endl;
             
             max = 0;
             
@@ -115,11 +116,15 @@ void maxDetector(double duration, unsigned long int &max, bool &analyse)
                 {
                     max = abs(current);
                 }
+                usleep(10000);
             }
             
-            cout << "Default max : " << max << endl;
-            
             peakThreshold = maxPercent*max;
+            if(peakThreshold < minThreshold)
+            {
+                peakThreshold = minThreshold;
+                cout << "Inferior bound !" << endl;
+            }
             cout << "New threshold : " << peakThreshold << endl;
             
             analyse = false;
@@ -133,29 +138,29 @@ void thresholdUpdater()
 {
     unsigned long int max = 0;
     bool analyse = false;
-    long int current;
     
+<<<<<<< HEAD
 
     long int seuil =159404908;
    
 
     thread tMaxDetector(maxDetector, 3., ref(max), ref(analyse));
 
+=======
+    thread tMaxDetector(maxDetector, 5., ref(max), ref(analyse));
+>>>>>>> origin/master
     
+    //First analysis at the beginning
     analyse = true;
     
-    cout << "Updating threshold..." << endl;
+    double t0 = time(nullptr);
     
     while(!over)
     {
-        current = currentIntensity;
-        
-        //Max & Threshold refresh
-        if(abs(current) > max)
+        if(time(nullptr) - t0 > 10.)
         {
-            max = abs(current);
-            peakThreshold = maxPercent*max;
-            cout << "New threshold : " << peakThreshold << endl;
+            t0 = time(nullptr);
+            analyse = true;
         }
         
         usleep(thresholdUpdaterResolution);
@@ -171,6 +176,7 @@ void peakDetector()
         if(abs(currentIntensity) > peakThreshold)
         {
             triggerFlash = true;
+            
         }
         
         usleep(peakResolution);
