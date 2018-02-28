@@ -23,6 +23,10 @@ void fenetre_noire() {
     WINDOW.clear(sf::Color::Black);
     WINDOW.display();
 }
+void fenetre_rouge(){
+    WINDOW.clear(sf::Color::Red);
+    WINDOW.display();
+}
 void flash()
 {
     if(dev)
@@ -34,4 +38,16 @@ void flash()
     else
         ARDUINO->serialPrint("a");
 
+}
+void redFlash()
+{
+    if(dev)
+    {
+        fenetre_rouge();
+        usleep(100000);
+        fenetre_noire();
+    }
+    else
+        ARDUINO->serialPrint("a");
+    
 }

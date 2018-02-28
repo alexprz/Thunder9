@@ -120,7 +120,7 @@ void maxDetector(double duration, unsigned long int &max, bool &analyse)
                 cout << "Inferior bound !" << endl;
             }
             cout << "New threshold : " << peakThreshold << endl;
-            
+            redFlash();
             analyse = false;
         }
         usleep(500000);
@@ -263,6 +263,10 @@ int main()
     std::thread listen(listening);      //Sound acquisition
     std::thread t2(thresholdUpdater);   //Real-time peakThreshold updater
     std::thread t3(peakDetector);       //Real-time peak detection
+    
+    flash();
+    sleep(1);
+    
     BUFF.thread();
     
 
