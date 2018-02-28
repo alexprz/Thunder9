@@ -28,6 +28,11 @@ using namespace std;
 #include "animation.hpp"
 #include "Tools.hpp"
 
+#include "RtAudio.h"
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
+
 bool triggerFlash = false;
 bool over = false;
 bool stopRecording = false;
@@ -50,9 +55,10 @@ bool endFlashSimulator = false;
 
 //sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
 sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
-//Buffer BUF;
+sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
 SerialPort *ARDUINO;
 RtAudio ADC;
+//Buffer BUF;
 
 
 void flashController()
@@ -212,7 +218,6 @@ bool mainInit()
 
     return true;
 }
-
 int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
            double streamTime, RtAudioStreamStatus status, void *userData )
 {
@@ -231,6 +236,7 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
     recordTime = streamTime;
     return 0;
 }
+
 int listening()
 {
     RtAudio::StreamParameters parameters;
@@ -296,6 +302,7 @@ int main()
         }
         usleep(10000);
     }
+    
 
 
 
