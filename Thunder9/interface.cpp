@@ -68,6 +68,7 @@ void Buffer::refresh() {
 //    while (not over) {
 //        push(currentIntensity);
         usleep(delay*1000);
+
         sf::Vertex line[] =
         {
             sf::Vertex(sf::Vector2f(10, 10)),
@@ -88,6 +89,7 @@ void Buffer::refresh() {
 //            WINDOWSOUND.draw(lines);
 //        }
 //    }
+
 }
 
 void Buffer::thread() {
