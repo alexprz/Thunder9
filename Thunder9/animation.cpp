@@ -41,13 +41,8 @@ void flash()
 }
 void redFlash()
 {
-    if(dev)
-    {
         fenetre_rouge();
         usleep(100000);
         fenetre_noire();
-    }
-    else
-        ARDUINO->serialPrint("a");
     
 }

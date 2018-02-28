@@ -16,5 +16,7 @@
 
 void fenetre_noire();
 void fenetre_blanche();
+void fenetre_rouge();
 
 void flash();
+void redFlash();
