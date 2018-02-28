@@ -71,7 +71,7 @@ void Buffer::refresh() {
         for (int i=0;i<width;i++) {
 
             for (int j=0;j<width;j++) {
-                lines[i].position = sf::Vector2f(i, height/2+tab[i].intensity);
+                lines[i].position = sf::Vector2f(i, height/2+(tab[i].intensity)*height/(2*intensityScale));
             }
             WINDOWSOUND.draw(lines);
         }
