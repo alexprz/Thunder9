@@ -10,9 +10,12 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <unistd.h>
+#include <SFML/Graphics/VertexArray.hpp>
+#include <thread>
 
 extern sf::RenderWindow WINDOWSOUND;
 extern long int currentIntensity;
+extern bool over;
 
 Buffer::Buffer(int width1, int height1, double timescale1, int intensityscale1) {
     tab = new instant[width];
@@ -35,10 +38,24 @@ void Buffer::addPeak() {
 
 void Buffer::refresh() {
     int delay = timescale/width;
-    tab[width/2].intensity = currentIntensity;
-    usleep(delay*1000);
+    while (not over) {
+        push(currentIntensity);
+        usleep(delay*1000);
+        for (int i=0;i<width;i++) {
+            sf::VertexArray lines(sf::LinesStrip, width);
+            for (int j=0;j<width;j++) {
+                lines[i].position = sf::Vector2f(i, height/2+tab[i].intensity);
+            }
+            WINDOWSOUND.draw(lines);
+        }
+    }
 }
 
+void Buffer::thread() {
+    std::thread tRefresh(&Buffer::refresh, this);
+    tRefresh.join();
+    
+}
 
 long int Buffer::getIntensity(int i) {
     return tab[i].intensity;

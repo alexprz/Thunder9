@@ -33,6 +33,7 @@ public:
     void addPeak();
     long int getIntensity(int i);
     long int getThresold();
+    void thread();
     void setThreshold();
     void refresh();
     ~Buffer();

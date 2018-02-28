@@ -32,6 +32,7 @@ using namespace std;
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include "interface.hpp"
 
 bool triggerFlash = false;
 bool over = false;
@@ -54,17 +55,21 @@ int thresholdUpdaterResolution = 10000;
 bool dev = true;
 bool endFlashSimulator = false;
 
+//WINDOW VAR
+int width = 800;
+int height = 600;
 
 
 
 
 //sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
 sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
-sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
+sf::RenderWindow WINDOWSOUND(sf::VideoMode(width, height), "Sound");
 
 SerialPort *ARDUINO;
 RtAudio ADC;
-//Buffer BUF;
+Buffer BUFF(width, height, 6, peakThreshold);
+
 
 
 void flashController()
@@ -138,17 +143,8 @@ void thresholdUpdater()
 {
     unsigned long int max = 0;
     bool analyse = false;
-    
-<<<<<<< HEAD
 
-    long int seuil =159404908;
-   
-
-    thread tMaxDetector(maxDetector, 3., ref(max), ref(analyse));
-
-=======
     thread tMaxDetector(maxDetector, 5., ref(max), ref(analyse));
->>>>>>> origin/master
     
     //First analysis at the beginning
     analyse = true;
@@ -294,12 +290,13 @@ int main()
         //L'initialisation a échouée
         return -1;
     }
-
+    
     std::thread t1(flashController);
     //std::thread t2(facticePeakDetector);
     std::thread listen(listening);
     std::thread t2(thresholdUpdater);
     std::thread t3(peakDetector);
+    BUFF.thread();
 
     flash();
     // run the program as long as the window is open
@@ -326,11 +323,6 @@ int main()
         usleep(10000);
     }
     
-
-
-
-
-
     over = true;
     t1.join();
     t2.join();
