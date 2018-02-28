@@ -45,6 +45,8 @@ public:
     void addPeak();
     long int getIntensity(int i);
     void refresh();
+    
+    void startDisplay();
     ~Buffer();
 };
 

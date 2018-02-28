@@ -10,6 +10,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <unistd.h>
+#include <thread>
 
 extern sf::RenderWindow WINDOWSOUND;
 extern long int currentIntensity;
@@ -60,9 +61,18 @@ void Buffer::addPeak() {
 }
 
 void Buffer::refresh() {
-    int delay = timeScale/width;
-    tab[width/2].intensity = currentIntensity;
-    usleep(delay*1000);
+//    int delay = timeScale/width;
+//    tab[width/2].intensity = currentIntensity;
+//    usleep(delay*1000);
+    for (int i=0; i<100; i++) {
+        std::cout << i << std::endl;
+    }
+}
+
+void Buffer::startDisplay()
+{
+    std::thread tRefresh(&Buffer::refresh, this);
+    tRefresh.join();
 }
 
 

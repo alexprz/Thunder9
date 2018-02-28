@@ -63,7 +63,7 @@ sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
 
 SerialPort *ARDUINO;
 RtAudio ADC;
-Buffer BUF(800, 600, 6., peakThreshold);
+Buffer BUFF(800, 600, 6., peakThreshold);
 
 
 void flashController()
@@ -156,6 +156,7 @@ void peakDetector()
         if(abs(currentIntensity) > peakThreshold)
         {
             triggerFlash = true;
+            BUFF.addPeak();
             
         }
         
@@ -257,6 +258,8 @@ int main()
     std::thread listen(listening);      //Sound acquisition
     std::thread t2(thresholdUpdater);   //Real-time peakThreshold updater
     std::thread t3(peakDetector);       //Real-time peak detection
+    
+    BUFF.startDisplay();
 
     //flash();
     // run the program as long as the window is open
