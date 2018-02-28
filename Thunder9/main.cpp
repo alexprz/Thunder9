@@ -27,6 +27,7 @@ using namespace std;
 #include "SerialPort.h"
 #include "animation.hpp"
 #include "Tools.hpp"
+#include "interface.hpp"
 
 #include "RtAudio.h"
 #include <iostream>
@@ -57,14 +58,12 @@ bool endFlashSimulator = false;
 
 
 
-
-//sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
 sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
 sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
 
 SerialPort *ARDUINO;
 RtAudio ADC;
-//Buffer BUF;
+Buffer BUF(800, 600, 6., peakThreshold);
 
 
 void flashController()
@@ -81,16 +80,6 @@ void flashController()
         usleep(10000);
     }
 }
-
-//void mainRecorder()
-//{
-//    RECORDER.start();
-//    while(!stopRecording){
-//
-//    }
-//    RECORDER.stop();
-//}
-
 
 void maxDetector(double duration, unsigned long int &max, bool &analyse)
 {
@@ -173,28 +162,6 @@ void peakDetector()
         usleep(peakResolution);
     }
 }
-
-//void facticePeakDetector()
-//{
-//    if(dev)
-//    {
-//        while(!endFlashSimulator)
-//        {
-//            triggerFlash = true;
-//            usleep(bpmToUS(94));
-//        }
-//    }
-//    else
-//    {
-//        for(int j = 0; j<100; j++)
-//        {
-//            cout << j << endl;
-//            triggerFlash = true;
-//            usleep(bpmToUS(76));
-//        }
-//    }
-//
-//}
 
 bool mainInit()
 {
@@ -286,13 +253,12 @@ int main()
         return -1;
     }
 
-    std::thread t1(flashController);
-    //std::thread t2(facticePeakDetector);
-    std::thread listen(listening);
-    std::thread t2(thresholdUpdater);
-    std::thread t3(peakDetector);
+    std::thread t1(flashController);    //Trigger flash when told to
+    std::thread listen(listening);      //Sound acquisition
+    std::thread t2(thresholdUpdater);   //Real-time peakThreshold updater
+    std::thread t3(peakDetector);       //Real-time peak detection
 
-    flash();
+    //flash();
     // run the program as long as the window is open
     while (WINDOW.isOpen() || WINDOWSOUND.isOpen())
     {
