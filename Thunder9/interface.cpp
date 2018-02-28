@@ -7,6 +7,7 @@
 //
 
 #include "interface.hpp"
+#include "animation.hpp"
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <unistd.h>
@@ -64,18 +65,29 @@ void Buffer::addPeak() {
 
 void Buffer::refresh() {
     int delay = timeScale/width;
-    while (not over) {
-        push(currentIntensity);
+//    while (not over) {
+//        push(currentIntensity);
         usleep(delay*1000);
-        sf::VertexArray lines(sf::LinesStrip, width);
-        for (int i=0;i<width;i++) {
-
-            for (int j=0;j<width;j++) {
-                lines[i].position = sf::Vector2f(i, height/2+tab[i].intensity);
-            }
-            WINDOWSOUND.draw(lines);
-        }
-    }
+        sf::Vertex line[] =
+        {
+            sf::Vertex(sf::Vector2f(10, 10)),
+            sf::Vertex(sf::Vector2f(150, 150)),
+            sf::Vertex(sf::Vector2f(100, 100)),
+            sf::Vertex(sf::Vector2f(150, 150))
+        };
+    fenetre_noire();
+    std::cout << "Dessin" << std::endl;
+       WINDOWSOUND.draw(line, 2, sf::Lines);
+    WINDOWSOUND.display();
+//        sf::VertexArray lines(sf::LinesStrip, width);
+//        for (int i=0;i<width;i++) {
+//
+//            for (int j=0;j<width;j++) {
+//                lines[i].position = sf::Vector2f(i, height/2+tab[i].intensity);
+//            }
+//            WINDOWSOUND.draw(lines);
+//        }
+//    }
 }
 
 void Buffer::thread() {
