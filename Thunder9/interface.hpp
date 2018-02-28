@@ -13,8 +13,6 @@
 
 #endif /* interface_hpp */
 
-extern 
-
 struct instant
 {
     bool peak=false;

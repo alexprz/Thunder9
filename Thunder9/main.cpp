@@ -23,6 +23,11 @@ using namespace std;
 #include "animation.hpp"
 #include "Tools.hpp"
 
+#include "RtAudio.h"
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
+
 bool triggerFlash = false;
 bool over = false;
 bool stopRecording = false;
@@ -146,10 +151,7 @@ bool mainInit()
     return true;
 }
 
-#include "RtAudio.h"
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
+
 
 int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
            double streamTime, RtAudioStreamStatus status, void *userData )
