@@ -115,7 +115,7 @@ void maxDetector(double duration, unsigned long int &max, bool &analyse)
             cout << "Default max : " << max << endl;
             
             peakThreshold = maxPercent*max;
-            cout << "New threshold : " << max << endl;
+            cout << "New threshold : " << peakThreshold << endl;
             
             analyse = false;
         }
@@ -287,17 +287,24 @@ int main()
 
     flash();
     // run the program as long as the window is open
-    while (WINDOW.isOpen())
+    while (WINDOW.isOpen() || WINDOWSOUND.isOpen())
     {
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
-        while (WINDOW.pollEvent(event))
+        sf::Event soundEvent;
+        while (WINDOW.pollEvent(event) || WINDOWSOUND.pollEvent(soundEvent))
         {
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
             {
                 WINDOW.close();
                 endFlashSimulator = true;
+            }
+            
+            // "close requested" event: we close the window
+            if (soundEvent.type == sf::Event::Closed)
+            {
+                WINDOWSOUND.close();
             }
         }
         usleep(10000);
