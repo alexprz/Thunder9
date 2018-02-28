@@ -8,13 +8,18 @@
 
 
 #include <iostream>
+#include <ctime>
 #include <thread>
 #include <math.h>
+
+#include <cstdlib>
+#include <cstring>
 
 using namespace std;
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include "RtAudio.h"
 // #include <SFML/Graphics.hpp>
 
 
@@ -30,16 +35,24 @@ bool stopPeakDetect = false;
 std::string ARDUINO_PATH = "/dev/cu.usbmodem1411";
 
 //RECORD VARS
-int currentIntensity = 0;
+long int currentIntensity = 0;
 double recordTime = 0;
+unsigned long int peakThreshold = 79404908;//259404908;  //Default threshold value
+float maxPercent = 0.2;
+
+//RESOLUTION VARS
+int peakResolution = 5000; //in us
+int thresholdUpdaterResolution = 10000;
 
 //DEV VARS
-bool dev = false;
+bool dev = true;
 bool endFlashSimulator = false;
 
-sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
+//sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
 sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
+//Buffer BUF;
 SerialPort *ARDUINO;
+RtAudio ADC;
 
 
 void flashController()
@@ -57,68 +70,118 @@ void flashController()
     }
 }
 
-void mainRecorder()
-{
-    RECORDER.start();
-    while(!stopRecording){
-
-    }
-    RECORDER.stop();
-}
-
-
-void peakDetector()
-{
-    int seuil = 0;
-//    cout << "Ecoute du vide" << endl;
-//    while (recordTime < 5.) {
-//        int current = currentIntensity;
-//        if(abs(current) > seuil)
-//        {
-//            cout << " up" << endl;
-//            seuil = abs(current);
-//            triggerFlash = true;
-//        }
+//void mainRecorder()
+//{
+//    RECORDER.start();
+//    while(!stopRecording){
+//
 //    }
-//    cout << "Fin" << endl;
+//    RECORDER.stop();
+//}
+
+
+void maxDetector(double duration, unsigned long int &max, bool &analyse)
+{
+    //Determines the maximum intensity during the specified time
+    //and modifies the given max
     
-    //seuil =159404908;
-    seuil =159404908;
-    
-    cout << "Seuil : " << seuil << endl;
     
     while(!over)
     {
-        if(abs(currentIntensity) > seuil)
+        if(analyse)
+        {
+            cout << "Listening max..." << endl;
+            
+            max = 0;
+            
+            double initTime = time(nullptr);
+            long int current;
+            
+            while(time(nullptr) - initTime < duration)
+            {
+                current = currentIntensity;
+                if(abs(current) > max)
+                {
+                    max = abs(current);
+                }
+            }
+            
+            cout << "Default max : " << max << endl;
+            
+            peakThreshold = maxPercent*max;
+            cout << "New threshold : " << max << endl;
+            
+            analyse = false;
+        }
+        usleep(500000);
+    }
+}
+
+
+void thresholdUpdater()
+{
+    unsigned long int max = 0;
+    bool analyse = false;
+    long int current;
+    
+    thread tMaxDetector(maxDetector, 3., ref(max), ref(analyse));
+    
+    analyse = true;
+    
+    cout << "Updating threshold..." << endl;
+    
+    while(!over)
+    {
+        current = currentIntensity;
+        
+        //Max & Threshold refresh
+        if(abs(current) > max)
+        {
+            max = abs(current);
+            peakThreshold = maxPercent*max;
+            cout << "New threshold : " << peakThreshold << endl;
+        }
+        
+        usleep(thresholdUpdaterResolution);
+    }
+    
+    tMaxDetector.join();
+}
+
+void peakDetector()
+{
+    while(!over)
+    {
+        if(abs(currentIntensity) > peakThreshold)
         {
             triggerFlash = true;
         }
         
-        usleep(5000);
+        usleep(peakResolution);
     }
 }
 
-void facticePeakDetector()
-{
-    if(dev)
-    {
-        while(!endFlashSimulator)
-        {
-            triggerFlash = true;
-            usleep(bpmToUS(94));
-        }
-    }
-    else
-    {
-        for(int j = 0; j<100; j++)
-        {
-            cout << j << endl;
-            triggerFlash = true;
-            usleep(bpmToUS(76));
-        }
-    }
-    
-}
+//void facticePeakDetector()
+//{
+//    if(dev)
+//    {
+//        while(!endFlashSimulator)
+//        {
+//            triggerFlash = true;
+//            usleep(bpmToUS(94));
+//        }
+//    }
+//    else
+//    {
+//        for(int j = 0; j<100; j++)
+//        {
+//            cout << j << endl;
+//            triggerFlash = true;
+//            usleep(bpmToUS(76));
+//        }
+//    }
+//
+//}
 
 bool mainInit()
 {
@@ -134,20 +197,21 @@ bool mainInit()
         }
     }
 
-    if (!sf::SoundBufferRecorder::isAvailable()){
-        //Si le micro n'est pas disponible
-        cout << " Micro non disponible..." << endl;
-        return false;
+//    if (!sf::SoundBufferRecorder::isAvailable()){
+//        //Si le micro n'est pas disponible
+//        cout << " Micro non disponible..." << endl;
+//        return false;
+//    }
+    
+    //Vérification du micro
+    if ( ADC.getDeviceCount() < 1 ) {
+        std::cout << "\nNo audio devices found!\n";
+        exit( 0 );
     }
 
 
     return true;
 }
-
-#include "RtAudio.h"
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
 
 int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
            double streamTime, RtAudioStreamStatus status, void *userData )
@@ -155,6 +219,7 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
     if ( status )
         std::cout << "Stream overflow detected!" << std::endl;
     // Do something with the data in the "inputBuffer" buffer.
+    
     //    int *buf = inputBuffer;
 //    int max = 0;
     for (int i=0; i<nBufferFrames; i++) {
@@ -168,21 +233,16 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 }
 int listening()
 {
-    RtAudio adc;
-    if ( adc.getDeviceCount() < 1 ) {
-        std::cout << "\nNo audio devices found!\n";
-        exit( 0 );
-    }
     RtAudio::StreamParameters parameters;
-    parameters.deviceId = adc.getDefaultInputDevice();
+    parameters.deviceId = ADC.getDefaultInputDevice();
     parameters.nChannels = 2;
     parameters.firstChannel = 0;
     unsigned int sampleRate = 44100;
     unsigned int bufferFrames = 256; // 256 sample frames
     try {
-        adc.openStream( NULL, &parameters, RTAUDIO_SINT16,
+        ADC.openStream( NULL, &parameters, RTAUDIO_SINT16,
                        sampleRate, &bufferFrames, &record );
-        adc.startStream();
+        ADC.startStream();
     }
     catch ( RtAudioError& e ) {
         e.printMessage();
@@ -197,12 +257,12 @@ int listening()
     }
     try {
         // Stop the stream
-        adc.stopStream();
+        ADC.stopStream();
     }
     catch (RtAudioError& e) {
         e.printMessage();
     }
-    if ( adc.isStreamOpen() ) adc.closeStream();
+    if ( ADC.isStreamOpen() ) ADC.closeStream();
     return 0;
 }
 
@@ -216,6 +276,7 @@ int main()
     std::thread t1(flashController);
     //std::thread t2(facticePeakDetector);
     std::thread listen(listening);
+    std::thread t2(thresholdUpdater);
     std::thread t3(peakDetector);
 
     flash();
@@ -242,7 +303,7 @@ int main()
 
     over = true;
     t1.join();
-    //t2.join();
+    t2.join();
     t3.join();
     listen.join();
     return 0;
