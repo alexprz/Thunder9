@@ -53,16 +53,14 @@ int thresholdUpdaterResolution = 10000;
 bool dev = true;
 bool endFlashSimulator = false;
 
-<<<<<<< HEAD
-sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
-sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "Flash");
-//sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
 
-=======
+
+
+
 //sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
 sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
 sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
->>>>>>> origin/master
+
 SerialPort *ARDUINO;
 RtAudio ADC;
 //Buffer BUF;
