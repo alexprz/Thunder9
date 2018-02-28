@@ -34,10 +34,10 @@ public:
     void setIntensityScale(long int scale);
     long int getIntensityScale();
     
-    void setTimeScale(double timescale);
+    void setTimeScale(double scale);
     double getTimeScale();
     
-    void setThreshold(unsigned long int threshold);
+    void setThreshold(unsigned long int value);
     long int getThreshold();
     
     Buffer(int width1, int height1, double timescale1, long int intensityscale1);

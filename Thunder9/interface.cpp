@@ -45,7 +45,7 @@ Buffer::Buffer(int width1, int height1, double timescale1, long int intensitysca
     width = width1;
     height = height1;
     timeScale = timescale1;
-    intensityscale = intensityscale1;
+    intensityScale = intensityscale1;
 }
 
 void Buffer::push(int intensityvalue) {
