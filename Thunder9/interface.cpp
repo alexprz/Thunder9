@@ -17,12 +17,38 @@ extern sf::RenderWindow WINDOWSOUND;
 extern long int currentIntensity;
 extern bool over;
 
-Buffer::Buffer(int width1, int height1, double timescale1, int intensityscale1) {
+//ACCESSORS
+long int Buffer::getIntensity(int i) {
+    return tab[i].intensity;
+}
+
+void Buffer::setIntensityScale(long int scale){
+    intensityScale = scale;
+}
+long int Buffer::getIntensityScale(){
+    return intensityScale;
+}
+
+void Buffer::setTimeScale(double scale){
+    timeScale = scale;
+}
+double Buffer::getTimeScale(){
+    return timeScale;
+}
+
+void Buffer::setThreshold(unsigned long int value){
+    threshold = value;
+}
+long int Buffer::getThreshold() {
+    return threshold;
+}
+
+Buffer::Buffer(int width1, int height1, double timescale1, long int intensityscale1) {
     tab = new instant[width];
     width = width1;
     height = height1;
-    timescale = timescale1;
-    intensityscale = intensityscale1;
+    timeScale = timescale1;
+    intensityScale = intensityscale1;
 }
 
 void Buffer::push(int intensityvalue) {
@@ -37,12 +63,13 @@ void Buffer::addPeak() {
 }
 
 void Buffer::refresh() {
-    int delay = timescale/width;
+    int delay = timeScale/width;
     while (not over) {
         push(currentIntensity);
         usleep(delay*1000);
+        sf::VertexArray lines(sf::LinesStrip, width);
         for (int i=0;i<width;i++) {
-            sf::VertexArray lines(sf::LinesStrip, width);
+
             for (int j=0;j<width;j++) {
                 lines[i].position = sf::Vector2f(i, height/2+tab[i].intensity);
             }
@@ -55,14 +82,6 @@ void Buffer::thread() {
     std::thread tRefresh(&Buffer::refresh, this);
     tRefresh.join();
     
-}
-
-long int Buffer::getIntensity(int i) {
-    return tab[i].intensity;
-}
-
-long int Buffer::getThresold() {
-    return threshold;
 }
 
 Buffer::~Buffer() {

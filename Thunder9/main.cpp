@@ -27,12 +27,13 @@ using namespace std;
 #include "SerialPort.h"
 #include "animation.hpp"
 #include "Tools.hpp"
+#include "interface.hpp"
 
 #include "RtAudio.h"
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
-#include "interface.hpp"
+
 
 bool triggerFlash = false;
 bool over = false;
@@ -61,8 +62,6 @@ int height = 600;
 
 
 
-
-//sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
 sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
 sf::RenderWindow WINDOWSOUND(sf::VideoMode(width, height), "Sound");
 
@@ -86,16 +85,6 @@ void flashController()
         usleep(10000);
     }
 }
-
-//void mainRecorder()
-//{
-//    RECORDER.start();
-//    while(!stopRecording){
-//
-//    }
-//    RECORDER.stop();
-//}
-
 
 void maxDetector(double duration, unsigned long int &max, bool &analyse)
 {
@@ -172,34 +161,13 @@ void peakDetector()
         if(abs(currentIntensity) > peakThreshold)
         {
             triggerFlash = true;
+            BUFF.addPeak();
             
         }
         
         usleep(peakResolution);
     }
 }
-
-//void facticePeakDetector()
-//{
-//    if(dev)
-//    {
-//        while(!endFlashSimulator)
-//        {
-//            triggerFlash = true;
-//            usleep(bpmToUS(94));
-//        }
-//    }
-//    else
-//    {
-//        for(int j = 0; j<100; j++)
-//        {
-//            cout << j << endl;
-//            triggerFlash = true;
-//            usleep(bpmToUS(76));
-//        }
-//    }
-//
-//}
 
 bool mainInit()
 {
@@ -290,15 +258,15 @@ int main()
         //L'initialisation a échouée
         return -1;
     }
-    
-    std::thread t1(flashController);
-    //std::thread t2(facticePeakDetector);
-    std::thread listen(listening);
-    std::thread t2(thresholdUpdater);
-    std::thread t3(peakDetector);
-    BUFF.thread();
 
-    flash();
+    std::thread t1(flashController);    //Trigger flash when told to
+    std::thread listen(listening);      //Sound acquisition
+    std::thread t2(thresholdUpdater);   //Real-time peakThreshold updater
+    std::thread t3(peakDetector);       //Real-time peak detection
+    BUFF.thread();
+    
+
+    //flash();
     // run the program as long as the window is open
     while (WINDOW.isOpen() || WINDOWSOUND.isOpen())
     {

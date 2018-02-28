@@ -24,18 +24,30 @@ class Buffer
     instant* tab;
     int width;
     int height;
-    int intensityscale;
-    int timescale;
-    int threshold=0;
+    long int intensityScale;
+    double timeScale;
+    unsigned long int threshold=0;
+    
 public:
-    Buffer(int width1, int height1, double timescale1, int intensityscale1);
+    
+    //ACCESSORS
+    void setIntensityScale(long int scale);
+    long int getIntensityScale();
+    
+    void setTimeScale(double scale);
+    double getTimeScale();
+    
+    void setThreshold(unsigned long int value);
+    long int getThreshold();
+    
+    Buffer(int width1, int height1, double timescale1, long int intensityscale1);
     void push(int intensityvalue);
     void addPeak();
     long int getIntensity(int i);
-    long int getThresold();
     void thread();
-    void setThreshold();
     void refresh();
+    
+    void startDisplay();
     ~Buffer();
 };
 
