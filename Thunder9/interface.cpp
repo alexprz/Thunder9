@@ -12,8 +12,9 @@
 #include <unistd.h>
 
 extern sf::RenderWindow WINDOWSOUND;
+extern long int currentIntensity;
 
-Buffer::Buffer(int width1, int height1, int timescale1, int intensityscale1) {
+Buffer::Buffer(int width1, int height1, double timescale1, int intensityscale1) {
     tab = new instant[width];
     width = width1;
     height = height1;
@@ -28,14 +29,26 @@ void Buffer::push(int intensityvalue) {
     }
 }
 
-void Buffer::addPeak(bool peakpresence) {
-    if (peakpresence) {
-        tab[width/2].peak = true;
-    }
+void Buffer::addPeak() {
+    tab[width/2].peak = true;
 }
 
 void Buffer::refresh() {
     int delay = timescale/width;
-    
+    tab[width/2].intensity = currentIntensity;
     usleep(delay*1000);
 }
+
+
+long int Buffer::getIntensity(int i) {
+    return tab[i].intensity;
+}
+
+long int Buffer::getThresold() {
+    return threshold;
+}
+
+Buffer::~Buffer() {
+    delete[] tab;
+}
+

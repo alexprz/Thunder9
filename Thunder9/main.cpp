@@ -136,7 +136,7 @@ void thresholdUpdater()
     long int current;
     
 
-    seuil =159404908;
+    long int seuil =159404908;
    
 
     thread tMaxDetector(maxDetector, 3., ref(max), ref(analyse));

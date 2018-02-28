@@ -16,7 +16,7 @@
 struct instant
 {
     bool peak=false;
-    int intensity=0;
+    long int intensity=0;
 };
 
 class Buffer
@@ -26,10 +26,14 @@ class Buffer
     int height;
     int intensityscale;
     int timescale;
+    int threshold=0;
 public:
-    Buffer(int width, int height, int timescale, int intensityscale);
+    Buffer(int width1, int height1, double timescale1, int intensityscale1);
     void push(int intensityvalue);
-    void addPeak(bool peakpresence);
+    void addPeak();
+    long int getIntensity(int i);
+    long int getThresold();
+    void setThreshold();
     void refresh();
     ~Buffer();
 };
