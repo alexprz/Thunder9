@@ -90,7 +90,7 @@ void peakDetector()
 //    cout << "Fin" << endl;
     
     //seuil =159404908;
-    seuil =159404908;
+    seuil =59404908;
     
     cout << "Seuil : " << seuil << endl;
     
