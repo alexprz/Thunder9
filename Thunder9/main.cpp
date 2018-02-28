@@ -254,6 +254,7 @@ int listening()
 
 int main()
 {
+    Buffer BUFFER(width, height, 6, peakThreshold);
     if(!mainInit()) {
         //L'initialisation a échouée
         return -1;
@@ -267,7 +268,7 @@ int main()
     flash();
     sleep(1);
     
-    BUFF.thread();
+    BUFFER.thread();
     
 
     //flash();
