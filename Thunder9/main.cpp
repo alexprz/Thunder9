@@ -128,7 +128,16 @@ void thresholdUpdater()
     unsigned long int max = 0;
     bool analyse = false;
     
+<<<<<<< HEAD
+
+    long int seuil =159404908;
+   
+
+    thread tMaxDetector(maxDetector, 3., ref(max), ref(analyse));
+
+=======
     thread tMaxDetector(maxDetector, 5., ref(max), ref(analyse));
+>>>>>>> origin/master
     
     //First analysis at the beginning
     analyse = true;
