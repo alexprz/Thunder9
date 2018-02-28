@@ -11,7 +11,7 @@
 #include <SFML/Graphics.hpp>
 #include <unistd.h>
 
-extern sf::RenderWindow WINDOW;
+extern sf::RenderWindow WINDOWSOUND;
 
 Buffer::Buffer(int width1, int height1, int timescale1, int intensityscale1) {
     tab = new instant[width];
