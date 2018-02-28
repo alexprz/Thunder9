@@ -39,6 +39,8 @@ bool endFlashSimulator = false;
 
 sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
 sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
+sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
+
 SerialPort *ARDUINO;
 
 
@@ -166,6 +168,7 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
     recordTime = streamTime;
     return 0;
 }
+
 int listening()
 {
     RtAudio adc;
@@ -235,6 +238,7 @@ int main()
         }
         usleep(10000);
     }
+    
 
 
 
