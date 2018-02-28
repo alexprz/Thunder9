@@ -39,12 +39,12 @@ int currentIntensity = 0;
 double recordTime = 0;
 
 //DEV VARS
-bool dev = false;
+bool dev = true;
 bool endFlashSimulator = false;
 
 sf::SoundBufferRecorder RECORDER; //Sert pour l'enregistrement
-sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
-sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
+sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "Flash");
+//sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
 
 SerialPort *ARDUINO;
 
