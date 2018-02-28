@@ -19,8 +19,8 @@ using namespace std;
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+
 #include "RtAudio.h"
-// #include <SFML/Graphics.hpp>
 
 
 
@@ -64,6 +64,8 @@ int height = 600;
 
 sf::RenderWindow WINDOW(sf::VideoMode(800, 600), "My window");
 sf::RenderWindow WINDOWSOUND(sf::VideoMode(width, height), "Sound");
+sf::View view(sf::FloatRect(0, 0, 800, 600));
+//window.setView(view);
 
 SerialPort *ARDUINO;
 RtAudio ADC;

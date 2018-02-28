@@ -66,6 +66,7 @@ void Buffer::addPeak() {
 void Buffer::refresh() {
     int delay = timeScale/width;
     sf::Vertex line[2];
+    
     while (not over) {
         push(currentIntensity);
         WINDOWSOUND.clear(sf::Color::Black);
@@ -75,12 +76,11 @@ void Buffer::refresh() {
             //std::cout << "Dessin" << std::endl;
             WINDOWSOUND.draw(line, 2, sf::Lines);
         }
-        
-        WINDOWSOUND.display();
-        
         usleep(1000000);
         std::cout << "bite" << std::endl;
+        WINDOWSOUND.display();
     }
+    
 }
 // (getIntensity(k)*height/(2*intensityScale)
 //        sf::VertexArray lines(sf::LinesStrip, width);
