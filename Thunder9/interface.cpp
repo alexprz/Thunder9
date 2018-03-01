@@ -67,21 +67,22 @@ void Buffer::addPeak() {
 void Buffer::refresh() {
     int delay = timeScale/width;
     sf::Vertex line[2];
-    
+
     while (not over) {
         push(currentIntensity);
-        WINDOWSOUND.clear(sf::Color::Black);
+        window->clear(sf::Color::Black);
         for (int k=0;k<width;k++) {
             line[0] = sf::Vertex(sf::Vector2f(k, height/2));
             line[1] = sf::Vertex(sf::Vector2f(k, height/2 + k%15));
             //std::cout << "Dessin" << std::endl;
-            WINDOWSOUND.draw(line, 2, sf::Lines);
+            window->draw(line, 2, sf::Lines);
+            window->display();
         }
         usleep(1000000);
         std::cout << "bite" << std::endl;
-        WINDOWSOUND.display();
+
     }
-    
+
 }
 // (getIntensity(k)*height/(2*intensityScale)
 //        sf::VertexArray lines(sf::LinesStrip, width);
@@ -99,7 +100,7 @@ void Buffer::refresh() {
 void Buffer::thread() {
     std::thread tRefresh(&Buffer::refresh, this);
     tRefresh.join();
-    
+
 }
 
 void Buffer::refreshWindow()
@@ -127,4 +128,3 @@ void Buffer::refreshWindow()
 Buffer::~Buffer() {
     delete[] tab;
 }
-
