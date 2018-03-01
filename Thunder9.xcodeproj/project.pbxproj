@@ -36,6 +36,7 @@
 /* Begin PBXFileReference section */
 		71812E482046C59D00939491 /* interface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = interface.cpp; sourceTree = "<group>"; };
 		71812E492046C59D00939491 /* interface.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = interface.hpp; sourceTree = "<group>"; };
+		71A0232A2047559E001E8B89 /* libImagineGraphics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libImagineGraphics.a; path = ../../../../../Library/Frameworks/Imagine.framework/Versions/4/Resources/lib/libImagineGraphics.a; sourceTree = "<group>"; };
 		A750E65520370D140090E158 /* libsfml-graphics.2.4.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsfml-graphics.2.4.2.dylib"; path = "../../../../../usr/local/Cellar/sfml/2.4.2_1/lib/libsfml-graphics.2.4.2.dylib"; sourceTree = "<group>"; };
 		A750E65720376FB80090E158 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
 		A750E65F203774EE0090E158 /* libsfml-audio.2.4.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libsfml-audio.2.4.2.dylib"; sourceTree = "<group>"; };
@@ -111,6 +112,7 @@
 		A7E9BF042035FF1E00641E01 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				71A0232A2047559E001E8B89 /* libImagineGraphics.a */,
 				A76F641E2045CC54007FF707 /* librtaudio.dylib */,
 				A750E65720376FB80090E158 /* libc++.1.dylib */,
 				A750E65520370D140090E158 /* libsfml-graphics.2.4.2.dylib */,
@@ -314,7 +316,7 @@
 					"$(PROJECT_DIR)/ExternalLibrairies/SFML/lib",
 					"/usr/local/Cellar/rt-audio/5.0.0/lib",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks/Imagine.framework/Versions/4/Resources/lib",
-					/Library/Frameworks/Imagine.framework/Versions/4/Resources/lib,
+
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -339,7 +341,7 @@
 					"$(PROJECT_DIR)/ExternalLibrairies/SFML/lib",
 					"/usr/local/Cellar/rt-audio/5.0.0/lib",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks/Imagine.framework/Versions/4/Resources/lib",
-					/Library/Frameworks/Imagine.framework/Versions/4/Resources/lib,
+
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
