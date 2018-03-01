@@ -300,14 +300,21 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				HEADER_SEARCH_PATHS = (
 					"/usr/local/Cellar/rt-audio/5.0.0/include",
 					"${SRCROOT}/ExternalLibrairies/SFML/include",
+					/Library/Frameworks/Imagine.framework/Versions/4/Resources/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"${SRCROOT}/ExternalLibrairies/SFML/lib",
 					"$(PROJECT_DIR)/ExternalLibrairies/SFML/lib",
 					"/usr/local/Cellar/rt-audio/5.0.0/lib",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks/Imagine.framework/Versions/4/Resources/lib",
+					/Library/Frameworks/Imagine.framework/Versions/4/Resources/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -318,14 +325,21 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				HEADER_SEARCH_PATHS = (
 					"/usr/local/Cellar/rt-audio/5.0.0/include",
 					"${SRCROOT}/ExternalLibrairies/SFML/include",
+					/Library/Frameworks/Imagine.framework/Versions/4/Resources/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"${SRCROOT}/ExternalLibrairies/SFML/lib",
 					"$(PROJECT_DIR)/ExternalLibrairies/SFML/lib",
 					"/usr/local/Cellar/rt-audio/5.0.0/lib",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks/Imagine.framework/Versions/4/Resources/lib",
+					/Library/Frameworks/Imagine.framework/Versions/4/Resources/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

@@ -120,7 +120,7 @@ void maxDetector(double duration, unsigned long int &max, bool &analyse)
                 cout << "Inferior bound !" << endl;
             }
             cout << "New threshold : " << peakThreshold << endl;
-            redFlash();
+            //redFlash();
             analyse = false;
         }
         usleep(500000);
@@ -166,6 +166,21 @@ void peakDetector()
         }
         
         usleep(peakResolution);
+    }
+}
+
+void peakDetector2()
+{
+    //Using Smoothed Z Score algorithm
+    smoothedZScore algo(50, 2.5, 1);
+    while(!over)
+    {
+        if(algo.isPeak(currentIntensity))
+        {
+            triggerFlash = true;
+            BUFF.addPeak();
+        }
+        usleep(1000);
     }
 }
 

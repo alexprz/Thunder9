@@ -14,3 +14,29 @@
 #endif /* Tools_hpp */
 
 int bpmToUS(float bpm);
+
+class smoothedZScore
+{
+private:
+    long int *data;
+    int length;
+    int lag;
+    float threshold;
+    float influence;
+    double avg;
+    double std;
+    
+    
+    
+public:
+    smoothedZScore(int givenLag, float givenThreshold, float givenInfluence);
+    ~smoothedZScore();
+    void avgUpdate();
+    void stdUpdate();
+    long int getData(int i);
+    long int getLastData();
+    void pushData(long int newData);
+    bool isPeak(long int newData);
+    
+    
+};
