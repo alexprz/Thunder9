@@ -28,14 +28,18 @@ private:
     
     
     
+    void avgUpdate();
+    void stdUpdate();
+    void quickAvgStdUpdate(long int newData, long int oldData);
+    long int getData(int i);
+    long int getLastData();
+    long int getOldData();
+    void pushData(long int newData);
+    
 public:
     smoothedZScore(int givenLag, float givenThreshold, float givenInfluence);
     ~smoothedZScore();
-    void avgUpdate();
-    void stdUpdate();
-    long int getData(int i);
-    long int getLastData();
-    void pushData(long int newData);
+    
     bool isPeak(long int newData);
     
     

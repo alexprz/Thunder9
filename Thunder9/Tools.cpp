@@ -51,6 +51,8 @@ void smoothedZScore::avgUpdate()
     }
     else
         avg = 0.;
+    
+    cout << "Slow AVG = " << avg << endl;
 }
 
 void smoothedZScore::stdUpdate()
@@ -65,7 +67,23 @@ void smoothedZScore::stdUpdate()
         std = sqrt(std);
     }
     else
-        avg = 0.;
+        std = 0.;
+    
+    cout << "Slow STD = " << std << endl;
+}
+
+void smoothedZScore::quickAvgStdUpdate(long int newData, long int oldData)
+{
+    //New AVG
+    double newAvg = (avg*lag - oldData + newData)/lag;
+    
+    //New STD
+    std = sqrt(pow(std, 2) + 2*(newData - oldData)/pow(lag, 2)*((lag-2)*avg+oldData) + pow(newData - newAvg, 2) - pow(oldData - avg, 2));
+    
+    avg = newAvg;
+    
+    cout << "Quick AVG = " << avg << endl;
+    cout << "Quick STD = " << std << endl;
 }
 
 long int smoothedZScore::getData(int i)
@@ -81,15 +99,26 @@ long int smoothedZScore::getLastData()
     return data[lag-1];
 }
 
+long int smoothedZScore::getOldData()
+{
+    return data[0];
+}
+
 void smoothedZScore::pushData(long int newData)
 {
+    //New AVG & STD calculation
+    //before shifting
+    quickAvgStdUpdate(newData, getOldData());
+    
     for(int i=0; i<lag; i++)
         data[i] = data[i+1];
     
     data[lag-1] = newData;
+    
     if(length < lag)
         length += 1;
     
+    //Old way to update AVG & STD
     avgUpdate();
     stdUpdate();
 }
