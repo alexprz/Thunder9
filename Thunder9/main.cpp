@@ -298,7 +298,7 @@ int main()
     sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
     WINDOWSOUND.setActive(false);
 
-    sf::Thread thread(BUFFER.refresh, &WINDOWSOUND);
+    sf::Thread thread(&Buffer::refresh, &BUFFER);
     thread.launch();
 //
 //    sf::Vertex line[2];
