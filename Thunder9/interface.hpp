@@ -28,6 +28,7 @@ class Buffer
     long int intensityScale;
     double timeScale;
     unsigned long int threshold=0;
+    sf::RenderWindow window;
 
 public:
 
@@ -41,7 +42,7 @@ public:
     void setThreshold(unsigned long int value);
     long int getThreshold();
 
-    Buffer(int width1, int height1, double timescale1, long int intensityscale1);
+    Buffer(int width1, int height1, double timescale1, long int intensityscale1, sf::WindowRender givenWindow);
     void push(int intensityvalue);
     void addPeak();
     long int getIntensity(int i);
