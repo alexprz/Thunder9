@@ -295,9 +295,9 @@ int listening()
 int main()
 {
     WINDOWSOUND.setActive(false);
-    
-    
-    sf::Thread thread(&Buffer::refreshWindow, &BUFF);
+
+
+    sf::Thread thread(&Buffer::refresh, &BUFF);
     thread.launch();
 //
 //    sf::Vertex line[2];

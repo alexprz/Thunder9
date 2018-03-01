@@ -55,9 +55,9 @@ Buffer::Buffer(sf::RenderWindow *givenWindow, int width1, int height1, double ti
 
 void Buffer::push(int intensityValue) {
     for (int i=1;i<width;i++) {
-        //tab[i-1] = tab[i];
+        tab[i-1] = tab[i];
     }
-    //tab[(int)width/2].intensity = intensityValue;
+    tab[(int)width/2].intensity = intensityValue;
 }
 
 void Buffer::addPeak() {
@@ -68,16 +68,17 @@ void Buffer::refresh() {
     int delay = timeScale/width;
     sf::Vertex line[2];
 
-    while (not over) {
+    while (window->isOpen()) {
         push(currentIntensity);
         window->clear(sf::Color::Black);
         for (int k=0;k<width;k++) {
             line[0] = sf::Vertex(sf::Vector2f(k, height/2));
-            line[1] = sf::Vertex(sf::Vector2f(k, height/2 + k%15));
+            line[1] = sf::Vertex(sf::Vector2f(k, height/2 + tab[k].intensity));
             //std::cout << "Dessin" << std::endl;
             window->draw(line, 2, sf::Lines);
-            window->display();
+
         }
+        window->display();
         usleep(1000000);
         std::cout << "bite" << std::endl;
 
@@ -111,14 +112,14 @@ void Buffer::refreshWindow()
     {
         line[0] = sf::Vertex(sf::Vector2f(k, height/2));
         line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 20));
-        
-        
+
+
         window->clear(sf::Color::Black);
-        
+
         window->draw(line, 2, sf::Lines);
-        
+
         window->display();
-        
+
         k += 2;
         k = k % 400;
         usleep(10000);
