@@ -63,22 +63,23 @@ void Buffer::addPeak() {
     tab[width/2].peak = true;
 }
 
-void Buffer::refresh() {
+void Buffer::refresh(sf::RenderWindow* givenWindow) {
     int delay = timeScale/width;
     sf::Vertex line[2];
     
     while (not over) {
         push(currentIntensity);
-        WINDOWSOUND.clear(sf::Color::Black);
+        givenWindow->clear(sf::Color::Black);
         for (int k=0;k<width;k++) {
             line[0] = sf::Vertex(sf::Vector2f(k, height/2));
             line[1] = sf::Vertex(sf::Vector2f(k, height/2 + k%15));
             //std::cout << "Dessin" << std::endl;
-            WINDOWSOUND.draw(line, 2, sf::Lines);
+            givenWindow->draw(line, 2, sf::Lines);
+            givenWindow->display();
         }
         usleep(1000000);
         std::cout << "bite" << std::endl;
-        WINDOWSOUND.display();
+        
     }
     
 }
