@@ -10,6 +10,7 @@
 #define interface_hpp
 
 #include <stdio.h>
+#include <SFML/Graphics.hpp>
 
 #endif /* interface_hpp */
 
@@ -22,6 +23,7 @@ struct instant
 class Buffer
 {
     instant* tab;
+    sf::RenderWindow *window;
     int width;
     int height;
     long int intensityScale;
@@ -40,12 +42,13 @@ public:
     void setThreshold(unsigned long int value);
     long int getThreshold();
     
-    Buffer(int width1, int height1, double timescale1, long int intensityscale1);
+    Buffer(sf::RenderWindow *givenWindow, int width1, int height1, double timescale1, long int intensityscale1);
     void push(int intensityvalue);
     void addPeak();
     long int getIntensity(int i);
     void thread();
     void refresh();
+    void refreshWindow();
     
     void startDisplay();
     ~Buffer();

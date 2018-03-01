@@ -69,7 +69,7 @@ sf::View view(sf::FloatRect(0, 0, 800, 600));
 
 SerialPort *ARDUINO;
 RtAudio ADC;
-Buffer BUFF(width, height, 6, peakThreshold);
+Buffer BUFF(&WINDOWSOUND, width, height, 6, peakThreshold);
 
 
 
@@ -270,69 +270,67 @@ int listening()
     return 0;
 }
 
-void refreshWindow(sf::RenderWindow *myWindow)
-{
-    sf::Vertex line[2];
-    int k = 0;
-    while(myWindow->isOpen())
-    {
-        line[0] = sf::Vertex(sf::Vector2f(k, height/2));
-        line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 20));
-        
-        
-        myWindow->clear(sf::Color::Black);
-        
-        myWindow->draw(line, 2, sf::Lines);
-        
-        myWindow->display();
-        
-        k += 2;
-        k = k % 400;
-        usleep(10000);
-    }
-}
+//void refreshWindow(sf::RenderWindow *myWindow)
+//{
+//    sf::Vertex line[2];
+//    int k = 0;
+//    while(myWindow->isOpen())
+//    {
+//        line[0] = sf::Vertex(sf::Vector2f(k, height/2));
+//        line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 20));
+//
+//
+//        myWindow->clear(sf::Color::Black);
+//
+//        myWindow->draw(line, 2, sf::Lines);
+//
+//        myWindow->display();
+//
+//        k += 2;
+//        k = k % 400;
+//        usleep(10000);
+//    }
+//}
 
 int main()
 {
+    WINDOWSOUND.setActive(false);
     
-    sf::RenderWindow WINDOWTEST(sf::VideoMode(800, 600), "TEST");
-    WINDOWTEST.setActive(false);
     
-    sf::Thread thread(&refreshWindow, &WINDOWTEST);
+    sf::Thread thread(&Buffer::refreshWindow, &BUFF);
     thread.launch();
 //
 //    sf::Vertex line[2];
 //    int k = 0;
-    while (WINDOWTEST.isOpen())
-    {
-        // check all the window's events that were triggered since the last iteration of the loop
-        sf::Event event;
-        while (WINDOWTEST.pollEvent(event))
-        {
-            // "close requested" event: we close the window
-            if (event.type == sf::Event::Closed)
-            {
-                WINDOWTEST.close();
-            }
-        }
-        
-//        line[0] = sf::Vertex(sf::Vector2f(k, height/2));
-//        line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 20));
+//    while (WINDOWTEST.isOpen())
+//    {
+//        // check all the window's events that were triggered since the last iteration of the loop
+//        sf::Event event;
+//        while (WINDOWTEST.pollEvent(event))
+//        {
+//            // "close requested" event: we close the window
+//            if (event.type == sf::Event::Closed)
+//            {
+//                WINDOWTEST.close();
+//            }
+//        }
 //
-//        WINDOWTEST.clear(sf::Color::Black);
+////        line[0] = sf::Vertex(sf::Vector2f(k, height/2));
+////        line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 20));
+////
+////        WINDOWTEST.clear(sf::Color::Black);
+////
+////        WINDOWTEST.draw(line, 2, sf::Lines);
+////
+////        WINDOWTEST.display();
+////
+////        k += 2;
+////        k = k % 400;
 //
-//        WINDOWTEST.draw(line, 2, sf::Lines);
-//
-//        WINDOWTEST.display();
-//
-//        k += 2;
-//        k = k % 400;
-        
-        usleep(100000);
-    }
-    sleep(3);
+//        usleep(100000);
+//    }
+//    sleep(3);
     
-    Buffer BUFFER(width, height, 6, peakThreshold);
     if(!mainInit()) {
         //L'initialisation a échouée
         return -1;

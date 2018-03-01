@@ -44,12 +44,13 @@ long int Buffer::getThreshold() {
     return threshold;
 }
 
-Buffer::Buffer(int width1, int height1, double timescale1, long int intensityscale1) {
+Buffer::Buffer(sf::RenderWindow *givenWindow, int width1, int height1, double timescale1, long int intensityscale1) {
     tab = new instant[width];
     width = width1;
     height = height1;
     timeScale = timescale1;
     intensityScale = intensityscale1;
+    window = givenWindow;
 }
 
 void Buffer::push(int intensityValue) {
@@ -99,6 +100,28 @@ void Buffer::thread() {
     std::thread tRefresh(&Buffer::refresh, this);
     tRefresh.join();
     
+}
+
+void Buffer::refreshWindow()
+{
+    sf::Vertex line[2];
+    int k = 0;
+    while(window->isOpen())
+    {
+        line[0] = sf::Vertex(sf::Vector2f(k, height/2));
+        line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 20));
+        
+        
+        window->clear(sf::Color::Black);
+        
+        window->draw(line, 2, sf::Lines);
+        
+        window->display();
+        
+        k += 2;
+        k = k % 400;
+        usleep(10000);
+    }
 }
 
 Buffer::~Buffer() {
