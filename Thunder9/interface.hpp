@@ -10,6 +10,7 @@
 #define interface_hpp
 
 #include <stdio.h>
+#include <SFML/Graphics.hpp>
 
 #endif /* interface_hpp */
 
@@ -27,28 +28,26 @@ class Buffer
     long int intensityScale;
     double timeScale;
     unsigned long int threshold=0;
-    
+
 public:
-    
+
     //ACCESSORS
     void setIntensityScale(long int scale);
     long int getIntensityScale();
-    
+
     void setTimeScale(double scale);
     double getTimeScale();
-    
+
     void setThreshold(unsigned long int value);
     long int getThreshold();
-    
+
     Buffer(int width1, int height1, double timescale1, long int intensityscale1);
     void push(int intensityvalue);
     void addPeak();
     long int getIntensity(int i);
     void thread();
-    void refresh();
-    
+    void refresh(sf::RenderWindow* givenWindow);
+
     void startDisplay();
     ~Buffer();
 };
-
-

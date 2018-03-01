@@ -92,19 +92,19 @@ void maxDetector(double duration, unsigned long int &max, bool &analyse)
 {
     //Determines the maximum intensity during the specified time
     //and modifies the given max
-    
-    
+
+
     while(!over)
     {
         if(analyse)
         {
             cout << "Analysing..." << endl;
-            
+
             max = 0;
-            
+
             double initTime = time(nullptr);
             long int current;
-            
+
             while(time(nullptr) - initTime < duration)
             {
                 current = currentIntensity;
@@ -114,7 +114,7 @@ void maxDetector(double duration, unsigned long int &max, bool &analyse)
                 }
                 usleep(10000);
             }
-            
+
             peakThreshold = maxPercent*max;
             if(peakThreshold < minThreshold)
             {
@@ -136,12 +136,12 @@ void thresholdUpdater()
     bool analyse = false;
 
     thread tMaxDetector(maxDetector, 5., ref(max), ref(analyse));
-    
+
     //First analysis at the beginning
     analyse = true;
-    
+
     double t0 = time(nullptr);
-    
+
     while(!over)
     {
         if(time(nullptr) - t0 > 10.)
@@ -149,10 +149,10 @@ void thresholdUpdater()
             t0 = time(nullptr);
             analyse = true;
         }
-        
+
         usleep(thresholdUpdaterResolution);
     }
-    
+
     tMaxDetector.join();
 }
 
@@ -164,9 +164,9 @@ void peakDetector()
         {
             triggerFlash = true;
             BUFF.addPeak();
-            
+
         }
-        
+
         usleep(peakResolution);
     }
 }
@@ -206,7 +206,7 @@ bool mainInit()
 //        cout << " Micro non disponible..." << endl;
 //        return false;
 //    }
-    
+
     //Vérification du micro
     if ( ADC.getDeviceCount() < 1 ) {
         std::cout << "\nNo audio devices found!\n";
@@ -222,7 +222,7 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
     if ( status )
         std::cout << "Stream overflow detected!" << std::endl;
     // Do something with the data in the "inputBuffer" buffer.
-    
+
     //    int *buf = inputBuffer;
 //    int max = 0;
     for (int i=0; i<nBufferFrames; i++) {
@@ -252,7 +252,7 @@ int listening()
         e.printMessage();
         exit( 0 );
     }
-    
+
     char input;
     std::cout << "\nRecording ... press <enter> to quit.\n";
     while(!over)
@@ -278,14 +278,14 @@ void refreshWindow(sf::RenderWindow *myWindow)
     {
         line[0] = sf::Vertex(sf::Vector2f(k, height/2));
         line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 20));
-        
-        
+
+
         myWindow->clear(sf::Color::Black);
-        
+
         myWindow->draw(line, 2, sf::Lines);
-        
+
         myWindow->display();
-        
+
         k += 2;
         k = k % 400;
         usleep(10000);
@@ -294,11 +294,11 @@ void refreshWindow(sf::RenderWindow *myWindow)
 
 int main()
 {
-    
-    sf::RenderWindow WINDOWTEST(sf::VideoMode(800, 600), "TEST");
-    WINDOWTEST.setActive(false);
-    
-    sf::Thread thread(&refreshWindow, &WINDOWTEST);
+
+    sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
+    WINDOWSOUND.setActive(false);
+
+    sf::Thread thread(BUFFER.refresh, &WINDOWSOUND);
     thread.launch();
 //
 //    sf::Vertex line[2];
@@ -315,7 +315,7 @@ int main()
                 WINDOWTEST.close();
             }
         }
-        
+
 //        line[0] = sf::Vertex(sf::Vector2f(k, height/2));
 //        line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 20));
 //
@@ -327,11 +327,11 @@ int main()
 //
 //        k += 2;
 //        k = k % 400;
-        
+
         usleep(100000);
     }
     sleep(3);
-    
+
     Buffer BUFFER(width, height, 6, peakThreshold);
     if(!mainInit()) {
         //L'initialisation a échouée
@@ -342,12 +342,12 @@ int main()
     std::thread listen(listening);      //Sound acquisition
     std::thread t2(thresholdUpdater);   //Real-time peakThreshold updater
     std::thread t3(peakDetector2);       //Real-time peak detection
-    
+
     flash();
     sleep(1);
-    
+
     //BUFFER.thread();
-    
+
 
     //flash();
     // run the program as long as the window is open
@@ -364,7 +364,7 @@ int main()
                 WINDOW.close();
                 endFlashSimulator = true;
             }
-            
+
             // "close requested" event: we close the window
             if (soundEvent.type == sf::Event::Closed)
             {
@@ -373,7 +373,7 @@ int main()
         }
         usleep(10000);
     }
-    
+
     over = true;
     t1.join();
     t2.join();
@@ -412,6 +412,3 @@ int main()
 //    cout << "Hello world !";
 //    return 0;
 //}
-
-
-
