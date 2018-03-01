@@ -298,7 +298,7 @@ int main()
     sf::RenderWindow WINDOWSOUND(sf::VideoMode(800, 600), "Sound");
     WINDOWSOUND.setActive(false);
 
-    sf::Thread thread(&Buffer::refresh, &BUFFER);
+    sf::Thread thread(&Buffer::refresh, &BUFF);
     thread.launch();
 //
 //    sf::Vertex line[2];
@@ -332,7 +332,7 @@ int main()
     }
     sleep(3);
 
-    Buffer BUFFER(width, height, 6, peakThreshold);
+
     if(!mainInit()) {
         //L'initialisation a échouée
         return -1;
