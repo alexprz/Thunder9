@@ -16,13 +16,14 @@
 
 struct instant
 {
-    bool peak=false;
-    long int intensity=0;
+    long int intensity;
+    bool peak;
 };
 
 class Buffer
 {
-    instant* tab;
+private:
+    instant *tab;
     sf::RenderWindow *window;
     int width;
     int height;
@@ -41,8 +42,9 @@ public:
 
     void setThreshold(unsigned long int value);
     long int getThreshold();
+    
     Buffer(sf::RenderWindow *givenWindow, int width1, int height1, double timescale1, long int intensityscale1);
-    void push(int intensityvalue);
+    void push(long int intensityvalue);
     void addPeak();
     long int getIntensity(int i);
     void thread();

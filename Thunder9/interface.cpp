@@ -45,17 +45,27 @@ long int Buffer::getThreshold() {
 }
 
 Buffer::Buffer(sf::RenderWindow *givenWindow, int width1, int height1, double timescale1, long int intensityscale1) {
-    tab = new instant[width];
     width = width1;
+    tab = new instant[width];
+    for(int i=0; i<width; i++)
+    {
+        tab[i].intensity = 0;
+        tab[i].peak = false;
+    
+    }
     height = height1;
     timeScale = timescale1;
     intensityScale = intensityscale1;
     window = givenWindow;
 }
 
-void Buffer::push(int intensityValue) {
-    for (int i=1;i<width;i++) {
-        tab[i-1] = tab[i];
+void Buffer::push(long int intensityValue) {
+    if(intensityValue/height > intensityScale)
+        intensityScale = intensityValue/height;
+    for(int i=0; i<width/2+1; i++)
+    {
+        tab[i].intensity = tab[i+1].intensity;
+        tab[i].peak = tab[i+1].peak;
     }
     tab[(int)width/2].intensity = intensityValue;
 }
@@ -66,21 +76,30 @@ void Buffer::addPeak() {
 
 void Buffer::refresh() {
     int delay = timeScale/width;
-    sf::Vertex line[2];
+//    sf::Vertex line[2];
+    sf::RectangleShape line;
+    sf::RectangleShape peakLine;
 
     while (window->isOpen()) {
         push(currentIntensity);
         window->clear(sf::Color::Black);
         for (int k=0;k<width;k++) {
-            line[0] = sf::Vertex(sf::Vector2f(k, height/2));
-            line[1] = sf::Vertex(sf::Vector2f(k, height/2 + tab[k].intensity));
-            //std::cout << "Dessin" << std::endl;
-            window->draw(line, 2, sf::Lines);
+//            line[0] = sf::Vertex(sf::Vector2f(k, height/2));
+//            line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 30));
+            line = sf::RectangleShape(sf::Vector2f(1, -tab[k].intensity/intensityScale));
+            line.setPosition(k, height/2);
+            if(tab[k].peak)
+            {
+                peakLine = sf::RectangleShape(sf::Vector2f(1, height));
+                peakLine.setPosition(k, 0);
+                peakLine.setFillColor(sf::Color(255, 0, 0));
+                window->draw(peakLine);
+            }
+            window->draw(line);
 
         }
         window->display();
-        usleep(1000000);
-        std::cout << "bite" << std::endl;
+        usleep(10000);
 
     }
 
@@ -122,7 +141,7 @@ void Buffer::refreshWindow()
 
         k += 2;
         k = k % 400;
-        usleep(10000);
+        usleep(100000);
     }
 }
 

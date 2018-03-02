@@ -32,6 +32,9 @@ smoothedZScore::smoothedZScore(int givenLag, float givenThreshold, float givenIn
     for(int i=0; i<lag; i++)
         data[i] = 0;
     
+//    for(int i=0; i<lag; i++)
+//        cout << "Data : " << data[i] << endl;
+    
 }
 
 smoothedZScore::~smoothedZScore()

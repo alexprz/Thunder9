@@ -69,7 +69,7 @@ sf::View view(sf::FloatRect(0, 0, 800, 600));
 
 SerialPort *ARDUINO;
 RtAudio ADC;
-Buffer BUFF(&WINDOWSOUND, width, height, 6, peakThreshold);
+Buffer BUFF(&WINDOWSOUND, width, height, 6, 0.001*peakThreshold);
 
 
 
@@ -81,6 +81,7 @@ void flashController()
     {
         if(triggerFlash)
         {
+//            BUFF.addPeak();
             flash();
             triggerFlash = false;
         }
@@ -164,7 +165,6 @@ void peakDetector()
         {
             triggerFlash = true;
             BUFF.addPeak();
-
         }
 
         usleep(peakResolution);
@@ -339,13 +339,12 @@ int main()
     std::thread t1(flashController);    //Trigger flash when told to
     std::thread listen(listening);      //Sound acquisition
     std::thread t2(thresholdUpdater);   //Real-time peakThreshold updater
-    std::thread t3(peakDetector2);       //Real-time peak detection
+    std::thread t3(peakDetector);       //Real-time peak detection
 
     flash();
     sleep(1);
 
     //BUFFER.thread();
-
 
     //flash();
     // run the program as long as the window is open
