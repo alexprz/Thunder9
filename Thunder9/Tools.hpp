@@ -21,6 +21,8 @@ private:
     long int *data;
     int length;
     int lag;
+    int start;
+    int end;
     float threshold;
     float influence;
     double avg;

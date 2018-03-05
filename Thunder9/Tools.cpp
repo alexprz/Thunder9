@@ -8,10 +8,13 @@
 
 #include <iostream>
 #include "math.h"
+#include "interface.hpp"
 
 using namespace std;
 
 #include "Tools.hpp"
+
+extern Buffer BUFF;
 
 int bpmToUS(float bpm)
 {
@@ -27,13 +30,13 @@ smoothedZScore::smoothedZScore(int givenLag, float givenThreshold, float givenIn
     avg = 0.;
     std = 0.;
     
-    data = new long int[lag]; //+1 for the new value
+    start = 0;
+    end = 1;
+    
+    data = new long int[lag];
     length = 0;
     for(int i=0; i<lag; i++)
         data[i] = 0;
-    
-//    for(int i=0; i<lag; i++)
-//        cout << "Data : " << data[i] << endl;
     
 }
 
@@ -44,7 +47,7 @@ smoothedZScore::~smoothedZScore()
 
 void smoothedZScore::avgUpdate()
 {
-    if(length == lag)
+    if(start == end)
     {
         //Enough data to calculate avg
         avg = 0.;
@@ -55,12 +58,12 @@ void smoothedZScore::avgUpdate()
     else
         avg = 0.;
     
-    cout << "Slow AVG = " << avg << endl;
+//    cout << "Slow AVG = " << avg << endl;
 }
 
 void smoothedZScore::stdUpdate()
 {
-    if(length == lag)
+    if(start == end)
     {
         //Enough data to calculate avg
         std = 0.;
@@ -72,7 +75,6 @@ void smoothedZScore::stdUpdate()
     else
         std = 0.;
     
-    cout << "Slow STD = " << std << endl;
 }
 
 void smoothedZScore::quickAvgStdUpdate(long int newData, long int oldData)
@@ -84,9 +86,6 @@ void smoothedZScore::quickAvgStdUpdate(long int newData, long int oldData)
     std = sqrt(pow(std, 2) + 2*(newData - oldData)/pow(lag, 2)*((lag-2)*avg+oldData) + pow(newData - newAvg, 2) - pow(oldData - avg, 2));
     
     avg = newAvg;
-    
-    cout << "Quick AVG = " << avg << endl;
-    cout << "Quick STD = " << std << endl;
 }
 
 long int smoothedZScore::getData(int i)
@@ -99,12 +98,12 @@ long int smoothedZScore::getData(int i)
 
 long int smoothedZScore::getLastData()
 {
-    return data[lag-1];
+    return data[end];
 }
 
 long int smoothedZScore::getOldData()
 {
-    return data[0];
+    return data[start];
 }
 
 void smoothedZScore::pushData(long int newData)
@@ -113,22 +112,30 @@ void smoothedZScore::pushData(long int newData)
     //before shifting
     quickAvgStdUpdate(newData, getOldData());
     
-    for(int i=0; i<lag; i++)
-        data[i] = data[i+1];
+//    for(int i=0; i<lag; i++)
+//        data[i] = data[i+1];
+//
+//    data[lag-1] = newData;
     
-    data[lag-1] = newData;
     
-    if(length < lag)
-        length += 1;
+    if(end == start)
+        start = (start+1)%lag;
+    
+    end = (end+1)%lag;
+    data[end] = newData;
+    
     
     //Old way to update AVG & STD
-    avgUpdate();
-    stdUpdate();
+//    avgUpdate();
+//    stdUpdate();
+    
+    BUFF.addAvg(avg);
+    BUFF.addStd(std);
 }
 
 bool smoothedZScore::isPeak(long int newData)
 {
-    if(length < lag)
+    if(start != end)
     {
         pushData(newData);
         cout << " Not enough data..." << endl;

@@ -18,6 +18,8 @@ struct instant
 {
     long int intensity;
     bool peak;
+    double avg;
+    double std;
 };
 
 class Buffer
@@ -46,6 +48,8 @@ public:
     Buffer(sf::RenderWindow *givenWindow, int width1, int height1, double timescale1, long int intensityscale1);
     void push(long int intensityvalue);
     void addPeak();
+    void addAvg(double givenAvg);
+    void addStd(double givenStd);
     long int getIntensity(int i);
     void thread();
     void refresh();

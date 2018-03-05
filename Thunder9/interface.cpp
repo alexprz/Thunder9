@@ -51,7 +51,8 @@ Buffer::Buffer(sf::RenderWindow *givenWindow, int width1, int height1, double ti
     {
         tab[i].intensity = 0;
         tab[i].peak = false;
-    
+        tab[i].avg = 0;
+        tab[i].std = 0;
     }
     height = height1;
     timeScale = timescale1;
@@ -66,6 +67,8 @@ void Buffer::push(long int intensityValue) {
     {
         tab[i].intensity = tab[i+1].intensity;
         tab[i].peak = tab[i+1].peak;
+        tab[i].avg = tab[i+1].avg;
+        tab[i].std = tab[i+1].std;
     }
     tab[(int)width/2].intensity = intensityValue;
 }
@@ -74,18 +77,33 @@ void Buffer::addPeak() {
     tab[width/2].peak = true;
 }
 
+void Buffer::addAvg(double givenAvg)
+{
+    tab[width/2].avg = givenAvg;
+}
+
+void Buffer::addStd(double givenStd)
+{
+    tab[width/2].std = givenStd;
+}
+
 void Buffer::refresh() {
+    
     int delay = timeScale/width;
-//    sf::Vertex line[2];
+    
     sf::RectangleShape line;
     sf::RectangleShape peakLine;
+    sf::RectangleShape avgPixel(sf::Vector2f(2, 2));
+    avgPixel.setFillColor(sf::Color(0, 255, 0));
+    sf::RectangleShape stdPixel(sf::Vector2f(2, 2));
+    stdPixel.setFillColor(sf::Color(255, 0, 255));
+    
+    
 
     while (window->isOpen()) {
         push(currentIntensity);
         window->clear(sf::Color::Black);
         for (int k=0;k<width;k++) {
-//            line[0] = sf::Vertex(sf::Vector2f(k, height/2));
-//            line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 30));
             line = sf::RectangleShape(sf::Vector2f(1, -tab[k].intensity/intensityScale));
             line.setPosition(k, height/2);
             if(tab[k].peak)
@@ -95,25 +113,29 @@ void Buffer::refresh() {
                 peakLine.setFillColor(sf::Color(255, 0, 0));
                 window->draw(peakLine);
             }
+            if(tab[k].avg != 0)
+            {
+                avgPixel.setPosition(k, height/2-tab[k].avg/intensityScale*100);
+                window->draw(avgPixel);
+//                avgPixel.setPosition(k, height/2+tab[k].avg/intensityScale*100);
+//                window->draw(avgPixel);
+            }
+            if(tab[k].std != 0)
+            {
+                stdPixel.setPosition(k, height/2-tab[k].std/intensityScale);
+                window->draw(stdPixel);
+                stdPixel.setPosition(k, height/2+tab[k].std/intensityScale);
+                window->draw(stdPixel);
+            }
             window->draw(line);
 
         }
         window->display();
-        usleep(10000);
+        usleep(5000);
 
     }
 
 }
-// (getIntensity(k)*height/(2*intensityScale)
-//        sf::VertexArray lines(sf::LinesStrip, width);
-//        for (int i=0;i<width;i++) {
-//
-//            for (int j=0;j<width;j++) {
-//                lines[i].position = sf::Vector2f(i, height/2+tab[i].intensity);
-//            }
-//            WINDOWSOUND.draw(lines);
-//        }
-//    }
 
 
 

@@ -174,7 +174,7 @@ void peakDetector()
 void peakDetector2()
 {
     //Using Smoothed Z Score algorithm
-    smoothedZScore algo(50, 2.5, 1);
+    smoothedZScore algo(1000, 0.05, 0.5);
     while(!over)
     {
         if(algo.isPeak(currentIntensity))
@@ -183,7 +183,7 @@ void peakDetector2()
             BUFF.addPeak();
         }
 //        usleep(1000);
-        usleep(1);
+        usleep(100);
     }
 }
 
@@ -270,66 +270,12 @@ int listening()
     return 0;
 }
 
-//void refreshWindow(sf::RenderWindow *myWindow)
-//{
-//    sf::Vertex line[2];
-//    int k = 0;
-//    while(myWindow->isOpen())
-//    {
-//        line[0] = sf::Vertex(sf::Vector2f(k, height/2));
-//        line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 20));
-//
-//
-//        myWindow->clear(sf::Color::Black);
-//
-//        myWindow->draw(line, 2, sf::Lines);
-//
-//        myWindow->display();
-//
-//        k += 2;
-//        k = k % 400;
-//        usleep(10000);
-//    }
-//}
-
 int main()
 {
     WINDOWSOUND.setActive(false);
 
-
     sf::Thread thread(&Buffer::refresh, &BUFF);
     thread.launch();
-//
-//    sf::Vertex line[2];
-//    int k = 0;
-//    while (WINDOWTEST.isOpen())
-//    {
-//        // check all the window's events that were triggered since the last iteration of the loop
-//        sf::Event event;
-//        while (WINDOWTEST.pollEvent(event))
-//        {
-//            // "close requested" event: we close the window
-//            if (event.type == sf::Event::Closed)
-//            {
-//                WINDOWTEST.close();
-//            }
-//        }
-//
-////        line[0] = sf::Vertex(sf::Vector2f(k, height/2));
-////        line[1] = sf::Vertex(sf::Vector2f(k, height/2 + 20));
-////
-////        WINDOWTEST.clear(sf::Color::Black);
-////
-////        WINDOWTEST.draw(line, 2, sf::Lines);
-////
-////        WINDOWTEST.display();
-////
-////        k += 2;
-////        k = k % 400;
-//
-//        usleep(100000);
-//    }
-//    sleep(3);
 
     if(!mainInit()) {
         //L'initialisation a échouée
@@ -339,14 +285,8 @@ int main()
     std::thread t1(flashController);    //Trigger flash when told to
     std::thread listen(listening);      //Sound acquisition
     std::thread t2(thresholdUpdater);   //Real-time peakThreshold updater
-    std::thread t3(peakDetector);       //Real-time peak detection
+    std::thread t3(peakDetector2);       //Real-time peak detection
 
-    flash();
-    sleep(1);
-
-    //BUFFER.thread();
-
-    //flash();
     // run the program as long as the window is open
     while (WINDOW.isOpen() || WINDOWSOUND.isOpen())
     {
